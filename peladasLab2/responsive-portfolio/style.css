@@ -13,6 +13,10 @@ body {
     margin: 0;
     font-family: 'Glacial Indifference', Arial, sans-serif;
     color: #F1FAEE;
+
+    overflow-x: hidden;
+    background-color: white; /* Ensures white background */
+    transition: transform 0.5s ease-out; /* Smooth transition */
 }
 
 /* === Fullscreen Background Film Strip Effect === */
@@ -86,7 +90,7 @@ header::after {
     top: 20px;
     right: 20px;
     font-size: 1.3rem;
-    color: white;
+    color: rgba(255, 255, 255, 0.429);
     text-align: left;
     width: 100%;
     max-width: 350px;
@@ -217,7 +221,7 @@ header::after {
     align-items: center; /* Center-aligns the content */
     text-align: center;
     gap: 10px;
-    padding: 150px 50px 50px 50px; /* top right bottom left */
+    padding: 50px 50px 50px 50px; /* top right bottom left */
     flex-wrap: wrap;
     background: #00000094;
 }
