@@ -1,0 +1,140 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #000000; /* Dark background for dark mode */
+    color: #e0e0e0; /* Light text color for better readability in dark mode */
+    line-height: 1.6;
+}
+
+header {
+    text-align: center;
+    padding: 0px 0px 5px 0px;
+    background-image: url('/responsive-portfolio/BtM/btmAssets/btmBackground.png'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 40px;
+    position: relative; /* For the pseudo-element */
+}
+
+header::after {
+    content: ""; /* Required for the pseudo-element */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgb(0, 0, 0) 0%, rgba(255, 255, 255, 0) 40%); /* Gradient overlay */
+    border-radius: 10px 10px 0 0; /* Match the header's border radius */
+    pointer-events: none; /* Ensures the overlay doesn't interfere with interactions */
+}
+
+header .cover-image {
+    max-width: 85%;
+    height: 30%;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    font-size: 3rem;
+    margin-top: 30px;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+header p {
+    font-size: 1.4rem;
+    margin-top: 15px;
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+/* Game History and Description Section */
+.game-history, .game-description {
+    padding: 40px 20px;
+    background-color: #000000; /* Dark background for these sections */
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.game-history h2, .game-description h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #d09747; /* Accent color for section titles */
+}
+
+.game-history p, .game-description p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-align: justify;
+    color: #e0e0e0; /* Light text for better contrast */
+}
+
+/* Team Section */
+.team {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.team-member {
+    text-align: center;
+    width: 200px;
+    margin: 15px;
+}
+
+.team-photo {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.team-member p {
+    color: #e0e0e0; /* Light text color */
+}
+
+/* Game Screenshots Section */
+.game-screenshots {
+    text-align: center;
+}
+
+.screenshots-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.game-screenshot {
+    width: 30%;
+    max-width: 300px;
+    border-radius: 10px;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    font-size: 1rem;
+}

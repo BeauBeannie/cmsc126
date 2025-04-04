@@ -1,0 +1,431 @@
+@font-face {
+    font-family: 'Glacial Indifference';
+    src: url('/responsive-portfolio/assets/glacial-indifference/GlacialIndifference-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background-image: url('/responsive-portfolio/assets/GameStyle/Background.png'); /* Path to your background image */
+    background-size: cover; /* Makes sure the image covers the whole page */
+    background-position: center center; /* Centers the background image */
+    background-attachment: fixed; /* Keeps the background fixed when scrolling */
+    margin: 0;
+    font-family: 'Glacial Indifference', Arial, sans-serif;
+    color: #F1FAEE;
+}
+
+/* === Fullscreen Background Film Strip Effect === */
+header {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden; /* Ensure images don't go out of bounds */
+}
+
+/* === Film Strip Container === */
+.film-strip {
+    display: flex;
+    position: absolute;
+    animation: slideFilm 35s ease-in-out infinite; /* Infinite animation, slow sliding effect */
+    width: 300vw; /* 3 times the width of the viewport for three images */
+}
+
+/* === Film Frame (container for each image) === */
+.film-frame {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0; /* Ensure no extra space */
+    padding: 0;
+    flex-shrink: 0; /* Prevents shrinking */
+}
+
+
+/* === Film Image Styling === */
+.film-image {
+    width: 100%;  /* Image will take full width of the container */
+    height: 100%; /* Image will take full height of the container */
+    object-fit: cover;  /* Ensures image fully fills the container without cropping */
+    object-position: center; /* Center the image within the container */
+    opacity: 100;  /* 69% opacity */
+}
+
+/* === Black Tint Over the Images === */
+.film-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 4, 0.45);  /* 45% black tint */
+    z-index: 1;
+}
+
+/* === Black Fade at the Bottom === */
+header::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 30vh;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000000 100%);
+    pointer-events: none;
+}
+
+.header-quote {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.3rem;
+    color: white;
+    text-align: left;
+    width: 100%;
+    max-width: 350px;
+}
+
+.header-quote .line {
+    margin: 20px 0;
+}
+
+.header-quote .left {
+    text-align: left;
+    padding-left: 20px;
+    font-style: italic;
+}
+
+.header-quote .right {
+    text-align: right;
+    padding-right: 5px;
+}
+
+
+
+/* === Sliding Film Strip Animation === */
+@keyframes slideFilm {
+    0%, 8.57% { transform: translateX(0); }         /* Pause at 1st image */
+    14.28%, 22.85% { transform: translateX(-100vw); } /* Pause at 2nd image */
+    28.57%, 37.14% { transform: translateX(-200vw); } /* Pause at 3rd image */
+    42.85%, 51.42% { transform: translateX(-100vw); } /* Pause at 2nd image */
+    57.14%, 65.71% { transform: translateX(0); }       /* Pause at 1st image */
+    100% { transform: translateX(0); } /* Loop back smoothly */
+}
+
+
+
+/* === Hero Content Styling === */
+.hero-content {
+    position: absolute;
+    bottom: 5vh; /* Adjust the distance from the bottom of the screen */
+    left: 3vw; /* Aligns it to the left side of the screen */
+    transform: translateX(0) translateY(0); /* Keeps the content positioned without shifting */
+    text-align: left;
+    color: rgb(218, 218, 218);
+    font-size: 2.2rem;
+    z-index: 1;
+    padding-left: 20px; /* Optional: Adds some padding from the left side */
+}
+
+/* Adjust spacing between Your Name and Game Developer text */
+.hero-content h1 {
+    margin-bottom: 10px; /* Adjust the margin to control spacing */
+}
+
+.hero-content p {
+    margin-top: 0; /* Adjust if needed */
+    margin-bottom: 20px; /* Adjust the spacing here as well */
+}
+
+.hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    padding: 200px 50px 200px 50px; /* top right bottom left */
+    flex-wrap: wrap;
+    background: #00000094; /* Subtle background */
+    position: relative; /* Make sure the fade can be applied */
+}
+
+/* === Fade Effect on the Top of the Hero Section === */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40%; /* Adjust the height of the fade */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%);
+    z-index: -1; /* Make sure the fade is behind the content */
+}
+
+.profile-picture {
+    width: 200px; /* Adjust size */
+    height: 200px;
+    border-radius: 50%; /* Makes it circular */
+    border: 4px solid white; /* White outline */
+    transition: transform 0.3s ease-in-out;
+}
+
+.profile-picture:hover {
+    transform: scale(1.1); /* Slight zoom effect */
+}
+
+.hero-text {
+    max-width: 500px;
+    background: rgba(0, 0, 0, 0.515); /* Transparent black for readability */
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.hero-text h2 {
+    font-size: 28px;
+    color: #F1FAEE;
+}
+
+.hero-text p {
+    font-size: 16px;
+    color: #ddd;
+    line-height: 1.6;
+}
+
+
+
+
+/* === Skill Section Styling === */
+#skills {
+    text-align: center;
+    margin: 50px 0;
+}
+
+.skills-section h2 {
+    font-size: 2.2rem;
+}
+
+.skills-section{
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center-aligns the content */
+    text-align: center;
+    gap: 10px;
+    padding: 150px 50px 50px 50px; /* top right bottom left */
+    flex-wrap: wrap;
+    background: #00000094;
+}
+
+
+.skills-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    padding: 0px;
+    gap: 50px;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+}
+
+.skill {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #00000094;
+    padding: 20px;
+    border-radius: 12px;
+    width: 120px; /* Set a fixed width */
+    height: 120px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.skill:hover {
+    transform: scale(1.1);
+    background: rgba(184, 184, 184, 0.118); /* Light background on hover */
+}
+
+.skill i {
+    font-size: 60px; /* Icon size */
+    color: #F1FAEE;
+    display: block; /* Ensures icon is on its own line */
+}
+
+.skill p {
+    margin-top: 16px;
+    font-size: 20px;
+}
+
+
+
+
+/* === Projects Section Styling === */
+#projects h2 {
+    text-align: center; /* Centers the text horizontally */
+    margin-bottom: 50px 0; /* Optional: adds space below the header */
+}
+
+.projects-section{
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center-aligns the content */
+    text-align: center;
+    gap: 10px;
+    padding: 10px 50px 150px 50px; /* top right bottom left */
+    flex-wrap: wrap;
+    background: #00000094;
+}
+
+.projects-section h2 {
+    font-size: 2.2rem;
+}
+
+
+.projects-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;  /* Ensure it takes full width */
+    box-sizing: border-box;  /* To avoid padding affecting width */
+}
+
+.project {
+    text-align: center;
+    max-width: 300px;
+}
+
+.project a {
+    display: block;
+    text-decoration: none;
+}
+
+.project-image {
+    width: 100%;
+    max-width: 280px; /* Adjusts size */
+    height: auto;
+    border-radius: 15px; /* Soft borders */
+    box-shadow: 0px 4px 8px #000000c5; /* Soft glowing effect */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-image:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+    box-shadow: 0px 6px 12px rgba(255, 255, 255, 0.3); /* Stronger glow */
+}
+
+.project h3 {
+    font-size: 1.4rem;
+    margin-top: 10px;
+    color: #F1FAEE;
+}
+
+.project p {
+    font-size: 1rem;
+    color: #A8DADC;
+}
+
+
+
+/* === Footer Styling === */
+#footer {
+    background-color: #040405e4;  /* Dark background for the footer */
+    color: #fff;
+    padding: 30px 0px;  /* Reduced padding for a smaller footer */
+    text-align: center;
+    position: relative;
+    width: 100%;
+    font-family: 'Glacial Indifference', sans-serif;
+}
+
+.footer-content h2 {
+    font-size: 1rem;  /* Smaller font size for the title */
+    margin-top: 10px;  /* Space above the title */
+    margin-bottom: 20px;  /* Reduced space below the header */
+    color: #F1FAEE; /* Soft color for the header */
+}
+
+.contact-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.contact-item {
+    background: rgba(255, 255, 255, 0.1); /* Subtle background */
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    width: 95px;
+    display: flex; /* Use flexbox for vertical and horizontal centering */
+    flex-direction: column; /* Stack the icon and text vertically */
+    align-items: center; /* Center the items horizontally */
+    justify-content: center; /* Center the items vertically */
+    transition: transform 0.3s ease-in-out, background 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: scale(1.05); /* Slight zoom effect */
+    background: rgba(255, 255, 255, 0.2); /* Light background on hover */
+}
+
+.contact-item i {
+    font-size: 3rem;  /* Adjust icon size */
+    margin-bottom: 0px;  /* Space between icon and text */
+}
+
+.contact-item a {
+    text-decoration: none;
+    color: #F1FAEE; /* Color of links */
+    font-size: 1rem;  /* Smaller text size for links */
+}
+
+.contact-item a:hover {
+    color: #0481ab; /* Color change on hover */
+}
+
+
+/* === Parallax Container === */
+.parallax-container {
+    position: relative;
+    width: 100%;
+    height: 300vh; /* Makes the page scrollable */
+    overflow: hidden;
+}
+
+/* === Shapes === */
+.shape {
+    position: fixed; /* Keeps the shapes in place relative to viewport */
+    width: 250px;
+    opacity: 0.3; /* Lower opacity */
+    z-index: -1; /* Places them behind other elements */
+    animation-fill-mode: forwards; /* Keeps the final state after animation */
+}
+
+/* === Individual Shape Positions === */
+.triangle { top: 5%; left: 0%; }
+.cross { top: 55%; left: 15%; }
+.square { top: 69%; left: 70%; }
+.circle { top: 0%; left: 85%; }
+
+/* === Scroll Parallax Effect using Scroll Timeline === */
+@keyframes parallax-fall {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 0.1; }
+    100% { transform: translateY(100px) rotate(360deg); opacity: 0.3; }
+}
+
+@supports (animation-timeline: scroll()) {
+    .shape {
+        animation: parallax-fall ease-out;
+        animation-timeline: scroll();
+        animation-range: 0% 100%; /* Stop after 20% of scrolling */
+    }
+}
