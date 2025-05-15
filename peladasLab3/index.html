@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfinding Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Skull Cavern Path</h1>
+    </header>
+
+    <div class="main-content">
+        <div class="visualizer-container">
+            <div class="algorithm-container">
+                <h2>Dijkstra's Algorithm</h2>
+                <div class="stats">
+                    <div>Nodes visited: <span id="dijkstra-visited">0</span></div>
+                    <div>Path length: <span id="dijkstra-length">0</span></div>
+                </div>
+                <div class="grid-container">
+                    <div id="dijkstra-grid" class="grid"></div>
+                </div>
+            </div>
+            
+            <div class="algorithm-container">
+                <h2>A* Algorithm</h2>   
+                <div class="stats">
+                    <div>Nodes visited: <span id="astar-visited">0</span></div>
+                    <div>Path length: <span id="astar-length">0</span></div>
+                </div>
+                <div class="grid-container">
+                    <div id="astar-grid" class="grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action buttons (vertical on left side) -->
+        <div class="left-actions visible" id="actions-bar">
+            <button id="find-path" class="icon-action" title="Find Path">
+                <i class="fas fa-play"></i>
+            </button>
+            <button id="clear-grid" class="icon-action" title="Clear Grid">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+            <button id="save-grid" class="icon-action" title="Load/Save">
+                <i class="fas fa-save"></i>
+            </button>
+            <button id="help" class="icon-action" title="Help">
+                <i class="fas fa-question"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Collapsible Configuration Panel -->
+    <div class="config-panel" id="config-panel">
+        <div class="config-header">
+            <h2>Settings & Tools</h2>
+        </div>
+        
+        <button id="collapse-config" class="config-toggle" aria-label="Toggle settings">
+            <i class="fas fa-cog"></i>
+        </button>
+        
+        <div class="config-content">
+            <div class="config-columns">
+                <div class="config-section">
+                    <h3>Controls</h3>
+                    <div class="config-container">
+                        <div class="config-group">
+                            <label for="grid-size-select">Grid:</label>
+                            <select id="grid-size-select" class="dropdown-select">
+                                <option value="10">10x10</option>
+                                <option value="15">15x15</option>
+                                <option value="20">20x20</option>
+                                <option value="25">25x25</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        
+                        <div class="config-group">
+                            <label for="speed-select">Speed:</label>
+                            <select id="speed-select" class="dropdown-select">
+                                <option value="50">Slow</option>
+                                <option value="20" selected>Medium</option>
+                                <option value="5">Fast</option>
+                            </select>
+                        </div>
+                        
+                        <div class="config-group">
+                            <label for="mode-select">Mode:</label>
+                            <select id="mode-select" class="dropdown-select">
+                                <option value="auto" selected>Auto</option>
+                                <option value="step">Step-by-Step</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="config-section">
+                    <h3>Drawing Tools</h3>
+                    <div class="config-container tools-container">
+                        <button id="set-start" class="tool">Set Start</button>
+                        <button id="set-end" class="tool">Set End</button>
+                        <button id="add-walls" class="tool">Add Walls</button>
+                        <button id="add-weights" class="tool">Add Weights</button>
+                        <button id="erase" class="tool">Erase</button>
+                    </div>
+                </div>
+                
+                <div class="config-section">
+                    <h3>Randomizers</h3>
+                    <div class="config-container randomizers-container">
+                        <button id="random-maze" class="action">Random Maze</button>
+                        <button id="random-weights" class="action">Random Weights</button>
+                        <button id="random-points" class="action">Random Start/End</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step buttons (hidden but still functional) -->
+            <div class="hidden-controls">
+                <button id="prev-step" disabled>Previous Step</button>
+                <button id="next-step" disabled>Next Step</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>How to Use this App</h2>
+            <p>A visual comparison between Dijkstra's algorithm and A* algorithm to find the shortest path through a grid with obstacles and weighted nodes.</p>
+            
+            <h3>About the Algorithms</h3>
+            <ul>
+                <li><strong>Dijkstra's Algorithm</strong>: Guarantees the shortest path by exploring in all directions equally, considering the cost to reach each node.</li>
+                <li><strong>A* Algorithm</strong>: Uses heuristics to find paths more efficiently by prioritizing nodes that seem closer to the destination, reducing the search area.</li>
+            </ul>
+            
+            <h3>Controls</h3>
+            <ul>
+                <li><strong>Grid Size</strong>: Change the size of the grid (10x10 to 25x25)</li>
+                <li><strong>Speed</strong>: Control how fast the visualization runs</li>
+                <li><strong>Mode</strong>: Choose automatic or step-by-step visualization</li>
+            </ul>
+            
+            <h3>Drawing Tools</h3>
+            <ul>
+                <li><strong>Set Start</strong>: Set the starting point for the algorithm (the stairwell)</li>
+                <li><strong>Set End</strong>: Set the destination point (the abyssal hole)</li>
+                <li><strong>Add Walls</strong>: Create obstacles the algorithm must navigate around (rocks)</li>
+                <li><strong>Add Weights</strong>: Add weighted nodes that are costly to traverse (value 2-10) (tree stumps)</li>
+                <li><strong>Erase</strong>: Remove walls or weighted nodes</li>
+            </ul>
+            
+            <h3>Keyboard Shortcuts</h3>
+            <ul>
+                <li><strong>S</strong>: Select Set Start tool</li>
+                <li><strong>E</strong>: Select Set End tool</li>
+                <li><strong>W</strong>: Select Add Walls tool</li>
+                <li><strong>D</strong>: Select Erase tool</li>
+                <li><strong>C</strong>: Clear Grid</li>
+                <li><strong>R</strong>: Generate Random Maze</li>
+                <li><strong>Space</strong>: Find Path / Run visualization</li>
+                <li><strong>Right Arrow</strong>: Next Step (in step mode)</li>
+                <li><strong>Left Arrow</strong>: Previous Step (in step mode)</li>
+                <li><strong>H</strong>: Show this Help</li>
+                <li><strong>Escape</strong>: Close Help</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="weight-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Set Node Weight</h3>
+            <p>Enter a weight value (2-10):</p>
+            <input type="number" id="weight-input" min="2" max="10" value="5">
+            <div class="modal-buttons">
+                <button id="confirm-weight">Confirm</button>
+                <button id="cancel-weight">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="save-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Save Grid</h3>
+            <p>Enter a name for this grid layout:</p>
+            <input type="text" id="save-name">
+            <div class="modal-buttons">
+                <button id="confirm-save">Save</button>
+                <button id="cancel-save">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="load-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Load Saved Grid</h3>
+            <div id="saved-grids-list">
+                <p>No saved grids found</p>
+            </div>
+            <div class="modal-buttons">
+                <button id="cancel-load">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="custom-grid-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Custom Grid Size</h3>
+            <p>Enter a grid size between 5 and 50:</p>
+            <div class="custom-grid-inputs">
+                <input type="number" id="custom-grid-size" min="5" max="50" value="10">
+                <span>x</span>
+                <input type="number" id="custom-grid-size-y" min="5" max="50" value="10">
+            </div>
+            <p class="warning">Large grid sizes may affect performance</p>
+            <div class="modal-buttons">
+                <button id="apply-custom-grid">Apply</button>
+                <button id="cancel-custom-grid">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="algorithms.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
