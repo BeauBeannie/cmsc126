@@ -6,10 +6,12 @@
     <title>Pathfinding Visualizer</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+15&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h1>Skull Cavern Path</h1>
+        <h1>The Lich's Dungeon</h1>
     </header>
 
     <div class="main-content">
@@ -48,6 +50,9 @@
             <button id="save-grid" class="icon-action" title="Load/Save">
                 <i class="fas fa-save"></i>
             </button>
+            <button id="settings-button" class="icon-action" title="Settings & Tools">
+                <i class="fas fa-cog"></i>
+            </button>
             <button id="help" class="icon-action" title="Help">
                 <i class="fas fa-question"></i>
             </button>
@@ -58,12 +63,9 @@
     <div class="config-panel" id="config-panel">
         <div class="config-header">
             <h2>Settings & Tools</h2>
+            <span class="close-panel" id="close-panel"><i class="fas fa-times"></i></span>
         </div>
-        
-        <button id="collapse-config" class="config-toggle" aria-label="Toggle settings">
-            <i class="fas fa-cog"></i>
-        </button>
-        
+          
         <div class="config-content">
             <div class="config-columns">
                 <div class="config-section">
@@ -128,110 +130,59 @@
         </div>
     </div>
 
-    <!-- Modals -->
-    <div id="help-modal" class="modal">
+    <!-- Intro Modal -->
+    <div id="intro-modal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>How to Use this App</h2>
-            <p>A visual comparison between Dijkstra's algorithm and A* algorithm to find the shortest path through a grid with obstacles and weighted nodes.</p>
-            
-            <h3>About the Algorithms</h3>
-            <ul>
-                <li><strong>Dijkstra's Algorithm</strong>: Guarantees the shortest path by exploring in all directions equally, considering the cost to reach each node.</li>
-                <li><strong>A* Algorithm</strong>: Uses heuristics to find paths more efficiently by prioritizing nodes that seem closer to the destination, reducing the search area.</li>
-            </ul>
-            
-            <h3>Controls</h3>
-            <ul>
-                <li><strong>Grid Size</strong>: Change the size of the grid (10x10 to 25x25)</li>
-                <li><strong>Speed</strong>: Control how fast the visualization runs</li>
-                <li><strong>Mode</strong>: Choose automatic or step-by-step visualization</li>
-            </ul>
-            
-            <h3>Drawing Tools</h3>
-            <ul>
-                <li><strong>Set Start</strong>: Set the starting point for the algorithm (the stairwell)</li>
-                <li><strong>Set End</strong>: Set the destination point (the abyssal hole)</li>
-                <li><strong>Add Walls</strong>: Create obstacles the algorithm must navigate around (rocks)</li>
-                <li><strong>Add Weights</strong>: Add weighted nodes that are costly to traverse (value 2-10) (tree stumps)</li>
-                <li><strong>Erase</strong>: Remove walls or weighted nodes</li>
-            </ul>
-            
-            <h3>Keyboard Shortcuts</h3>
-            <ul>
-                <li><strong>S</strong>: Select Set Start tool</li>
-                <li><strong>E</strong>: Select Set End tool</li>
-                <li><strong>W</strong>: Select Add Walls tool</li>
-                <li><strong>D</strong>: Select Erase tool</li>
-                <li><strong>C</strong>: Clear Grid</li>
-                <li><strong>R</strong>: Generate Random Maze</li>
-                <li><strong>Space</strong>: Find Path / Run visualization</li>
-                <li><strong>Right Arrow</strong>: Next Step (in step mode)</li>
-                <li><strong>Left Arrow</strong>: Previous Step (in step mode)</li>
-                <li><strong>H</strong>: Show this Help</li>
-                <li><strong>Escape</strong>: Close Help</li>
-            </ul>
+            <div class="lich-header">
+                <h2>Well well well</h2>
+            </div>
+            <div class="intro-content">
+                <div class="lich-message">
+                    <p><strong>dqk wnmq:</strong> "Here we are at last! I've been waiting an <strong>eternity</strong> to find a mind to control. <strong>This fragile body</strong>, I wonder if it'll survive...</p>
+
+                    <p>Bring me the <strong>Enchiridion</strong>, and you shall become the greatest hero in the Land of <strong>Vireluna</strong>.</p>
+    
+                    <p>Wretches! Some cursed force keeps me from the book. This pitiful dungeon may destroy this vessel before I succeed...</p>
+    
+                    <p>I remember two ancient algorithms, lost to time, that can lead you to the book. Follow their path, and you'll hear praises echo through the halls — voices shouting your name, basking in your glory... fame eternal."</p>
+                    
+                    <ul>
+                        <li><strong>Dijkstra's Algorithm</strong> – A methodical path that explores every possible route to ensure the shortest way is found.</li>
+                        <li><strong>A* Algorithm</strong> – A strategic path that combines distance and intuition to reach the goal with cunning efficiency.</li>
+                    </ul>
+
+                    <p>Curse this rxfuybs dungeon, some being keeps placing obstacles in my way. I'll have to find a way to get through them...</p>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="proceed-intro">Enter the Dungeon</button>
+            </div>
         </div>
     </div>
-
+    
+    <!-- Weight Modal -->
     <div id="weight-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>Set Node Weight</h3>
-            <p>Enter a weight value (2-10):</p>
+            <h2>Set Weight</h2>
+            <p>Enter a weight value between 2 and 10:</p>
             <input type="number" id="weight-input" min="2" max="10" value="5">
             <div class="modal-buttons">
-                <button id="confirm-weight">Confirm</button>
-                <button id="cancel-weight">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="save-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3>Save Grid</h3>
-            <p>Enter a name for this grid layout:</p>
-            <input type="text" id="save-name">
-            <div class="modal-buttons">
-                <button id="confirm-save">Save</button>
-                <button id="cancel-save">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="load-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3>Load Saved Grid</h3>
-            <div id="saved-grids-list">
-                <p>No saved grids found</p>
-            </div>
-            <div class="modal-buttons">
-                <button id="cancel-load">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="custom-grid-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3>Custom Grid Size</h3>
-            <p>Enter a grid size between 5 and 50:</p>
-            <div class="custom-grid-inputs">
-                <input type="number" id="custom-grid-size" min="5" max="50" value="10">
-                <span>x</span>
-                <input type="number" id="custom-grid-size-y" min="5" max="50" value="10">
-            </div>
-            <p class="warning">Large grid sizes may affect performance</p>
-            <div class="modal-buttons">
-                <button id="apply-custom-grid">Apply</button>
-                <button id="cancel-custom-grid">Cancel</button>
+                <button id="cancel-weight" class="modal-button">Cancel</button>
+                <button id="confirm-weight" class="modal-button">Confirm</button>
             </div>
         </div>
     </div>
 
     <script src="algorithms.js"></script>
     <script src="script.js"></script>
+    
+    <!-- Notification popup -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <span id="notification-message"></span>
+            <span class="notification-close"></span>
+        </div>
+    </div>
 </body>
 </html> 

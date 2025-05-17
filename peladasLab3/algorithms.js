@@ -13,6 +13,7 @@ class Node {
         this.hScore = 0; // For A* Algorithm (heuristic: estimated cost to end)
         this.previous = null; // Used to reconstruct the path
         this.isVisited = false; // Track if this node has been visited
+        this.isInPath = false; // Reset path indicator
     }
 
     reset() {
@@ -22,6 +23,7 @@ class Node {
         this.hScore = 0;
         this.previous = null;
         this.isVisited = false;
+        this.isInPath = false; // Reset path indicator
     }
 }
 
@@ -282,6 +284,18 @@ function getNodesInShortestPathOrder(finishNode) {
 
 // Function to generate a random maze
 function generateRandomMaze(grid, wallDensity = 0.3) {
+    // First clear existing walls to avoid duplication
+    for (let row = 0; row < grid.rows; row++) {
+        for (let col = 0; col < grid.cols; col++) {
+            const node = grid.getNode(row, col);
+            // Only clear walls, not start or end nodes
+            if (!node.isStart && !node.isEnd) {
+                node.isWall = false;
+            }
+        }
+    }
+    
+    // Then generate new walls
     for (let row = 0; row < grid.rows; row++) {
         for (let col = 0; col < grid.cols; col++) {
             const node = grid.getNode(row, col);
@@ -307,25 +321,25 @@ function generateRandomWeights(grid, probability = 0.2, minWeight = 2, maxWeight
 
 // Function to generate random start and end points
 function generateRandomStartEnd(grid) {
-    // Reset existing start and end
-    if (grid.startNode) grid.startNode.isStart = false;
-    if (grid.endNode) grid.endNode.isEnd = false;
-    
-    // Generate random positions
+    // Generate random positions ensuring they don't land on walls
     let startRow, startCol, endRow, endCol;
     
+    // Find a valid start position
     do {
         startRow = Math.floor(Math.random() * grid.rows);
         startCol = Math.floor(Math.random() * grid.cols);
+    } while (grid.getNode(startRow, startCol).isWall);
+    
+    // Find a valid end position different from start
+    do {
         endRow = Math.floor(Math.random() * grid.rows);
         endCol = Math.floor(Math.random() * grid.cols);
     } while (
         (startRow === endRow && startCol === endCol) || // Ensure start and end are different
-        grid.getNode(startRow, startCol).isWall || // Ensure start is not a wall
         grid.getNode(endRow, endCol).isWall // Ensure end is not a wall
     );
     
-    // Set new start and end
+    // Set new start and end nodes
     grid.setStartNode(startRow, startCol);
     grid.setEndNode(endRow, endCol);
 }

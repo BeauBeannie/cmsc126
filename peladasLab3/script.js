@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMouseDown = false;
     let weightValue = 5; // Default weight value
     
+    // Store wall images for each cell
+    const wallImageMap = new Map();
+    
     // Create the two grids
     const dijkstraGrid = new Grid(gridSize, gridSize);
     const astarGrid = new Grid(gridSize, gridSize);
@@ -16,6 +19,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let astarAnimationHistory = [];
     let currentStep = 0;
     let maxSteps = 0;
+    
+    // Asset paths for tiles and obstacles
+    const tiles = [
+        'assets/Tile1_16-export.png',
+        'assets/Tile2_16-export.png',
+        'assets/Tile3_16-export.png',
+        'assets/Tile4_16-export.png',
+    ];
+    
+    const obstacles = [
+        'assets/Obstacle-export.png',
+        'assets/Obstacle1-export.png',
+        'assets/Obstacle2-export.png',
+        'assets/Obstacle3-export.png'
+    ];
+    
+    const spriteImg = 'assets/Sprite-export.png';
+    const spriteImg1 = 'assets/Enchiridion.png';
     
     // DOM Elements
     const dijkstraGridElement = document.getElementById('dijkstra-grid');
@@ -29,14 +50,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveModal = document.getElementById('save-modal');
     const loadModal = document.getElementById('load-modal');
     const customGridModal = document.getElementById('custom-grid-modal');
+    const introModal = document.getElementById('intro-modal');
+    const notification = document.getElementById('notification');
+    const notificationMessage = document.getElementById('notification-message');
     const configPanel = document.getElementById('config-panel');
     const actionsBar = document.getElementById('actions-bar');
     
-    // Dropdown elements
+    // Settings elements
+    const settingsButton = document.getElementById('settings-button');
+    const closePanel = document.getElementById('close-panel');
+    
+    // Dropdown selects
     const gridSizeSelect = document.getElementById('grid-size-select');
     const speedSelect = document.getElementById('speed-select');
     const modeSelect = document.getElementById('mode-select');
     
+    // The assets are already defined above
     // Initialize grids
     createGridDOM(dijkstraGridElement, dijkstraGrid);
     createGridDOM(astarGridElement, astarGrid);
@@ -50,88 +79,94 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listeners for keyboard shortcuts
     initKeyboardShortcuts();
     
-    // Initialize config panel toggle
-    initConfigPanel();
+    // Initialize settings panel
+    initSettingsPanel();
     
-    // Function to create the grid DOM elements
-    function createGridDOM(gridElement, grid) {
-        gridElement.innerHTML = '';
-        
-        // Use grid-template-columns and grid-template-rows with fr units for perfect square cells
-        gridElement.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-        gridElement.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
-        
-        for (let row = 0; row < gridSize; row++) {
-            for (let col = 0; col < gridSize; col++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.row = row;
-                cell.dataset.col = col;
-                
-                // Add event listeners for cell interactions
-                cell.addEventListener('mousedown', (e) => {
-                    e.preventDefault(); // Prevent default drag behavior
-                    isMouseDown = true;
-                    handleCellInteraction(cell, grid);
-                });
-                
-                cell.addEventListener('mouseenter', () => {
-                    if (isMouseDown) {
-                        handleCellInteraction(cell, grid);
-                    }
-                });
-                
-                cell.addEventListener('mouseup', () => {
-                    isMouseDown = false;
-                });
-                
-                gridElement.appendChild(cell);
-            }
+    // Show intro modal on first visit
+    showIntroOnFirstVisit();
+    
+    // Add window resize handler to maintain grid proportions
+    window.addEventListener('resize', () => {
+        // Ensure grid containers maintain perfect square ratio after resize
+        document.querySelectorAll('.grid-container').forEach(container => {
+            container.style.aspectRatio = '1 / 1';
+        });
+    });
+    
+    // Function to show the intro modal on first visit
+    function showIntroOnFirstVisit() {
+        // Check if this is the first visit
+        if (!localStorage.getItem('lich-dungeon-intro-shown')) {
+            // Show the intro modal
+            introModal.style.display = 'block';
+            
+            // Set up the proceed button
+            const proceedButton = document.getElementById('proceed-intro');
+            const closeButton = introModal.querySelector('.close');
+            
+            proceedButton.addEventListener('click', () => {
+                introModal.style.display = 'none';
+                // Mark as shown in localStorage
+                localStorage.setItem('lich-dungeon-intro-shown', 'true');
+            });
+            
+            closeButton.addEventListener('click', () => {
+                introModal.style.display = 'none';
+                // Mark as shown in localStorage
+                localStorage.setItem('lich-dungeon-intro-shown', 'true');
+            });
         }
-        
-        // Ensure square proportions are maintained
-        const gridContainer = gridElement.parentElement;
-        gridContainer.style.aspectRatio = '1 / 1';
-        
-        // Prevent dragging issues
-        gridElement.addEventListener('mouseup', () => {
-            isMouseDown = false;
-        });
-        
-        gridElement.addEventListener('mouseleave', () => {
-            isMouseDown = false;
-        });
-        
-        updateGridDisplay(gridElement, grid);
     }
     
-    // Function to initialize the config panel
-    function initConfigPanel() {
-        const collapseBtn = document.getElementById('collapse-config');
-        const configHeader = document.querySelector('.config-header');
+    // Function to initialize settings panel
+    function initSettingsPanel() {
+        // Settings button click handler is now in initButtons() to avoid conflicts
         
-        // Set initial state to expanded
-        configPanel.classList.add('expanded');
+        // Close settings panel
+        closePanel.addEventListener('click', () => {
+            configPanel.classList.remove('expanded');
+            settingsButton.classList.remove('active');
+        });
         
-        // Toggle panel when toggle button is clicked
-        collapseBtn.addEventListener('click', toggleConfigPanel);
+        // Handle tool buttons
+        document.getElementById('set-start').addEventListener('click', () => {
+            currentTool = 'start';
+            setActiveToolButton('set-start');
+        });
         
-        // Make header clickable too (for large screens)
-        configHeader.addEventListener('click', toggleConfigPanel);
+        document.getElementById('set-end').addEventListener('click', () => {
+            currentTool = 'end';
+            setActiveToolButton('set-end');
+        });
         
-        function toggleConfigPanel() {
-            configPanel.classList.toggle('expanded');
+        document.getElementById('add-walls').addEventListener('click', () => {
+            currentTool = 'wall';
+            setActiveToolButton('add-walls');
+        });
+        
+        document.getElementById('add-weights').addEventListener('click', () => {
+            document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('add-weights').classList.add('active');
             
-            // Highlight the settings icon when panel is expanded
-            if (configPanel.classList.contains('expanded')) {
-                collapseBtn.style.color = '#4CAF50';
-            } else {
-                collapseBtn.style.color = '#333';
-            }
-        }
+            // Show weight modal immediately when weight tool is selected
+            showWeightModal(() => {
+                currentTool = 'weight';
+            });
+        });
+        
+        document.getElementById('erase').addEventListener('click', () => {
+            currentTool = 'erase';
+            setActiveToolButton('erase');
+        });
         
         // Initialize dropdowns
         initDropdowns();
+    }
+    
+    // Function to set active tool button
+    function setActiveToolButton(buttonId) {
+        document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(buttonId).classList.add('active');
     }
     
     // Function to initialize dropdowns
@@ -160,6 +195,62 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Function to create the grid DOM elements    
+    function createGridDOM(gridElement, grid) {
+        gridElement.innerHTML = '';
+        
+        // Use grid-template-columns and grid-template-rows with fr units for perfect square cells
+        gridElement.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+        gridElement.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+        
+        for (let row = 0; row < gridSize; row++) {
+            for (let col = 0; col < gridSize; col++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.row = row;
+                cell.dataset.col = col;
+                
+                // Apply random tile background
+                const randomTile = tiles[Math.floor(Math.random() * tiles.length)];
+                cell.style.backgroundImage = `url('${randomTile}')`;
+                
+                // Add event listeners for cell interactions
+                cell.addEventListener('mousedown', (e) => {
+                    e.preventDefault(); // Prevent default drag behavior
+                    isMouseDown = true;
+                    handleCellInteraction(cell, grid);
+                });
+                
+                cell.addEventListener('mouseenter', () => {
+                    if (isMouseDown) {
+                        handleCellInteraction(cell, grid);
+                    }
+                });
+                
+                cell.addEventListener('mouseup', () => {
+                    isMouseDown = false;
+                });
+                
+                gridElement.appendChild(cell);
+            }
+        }
+        
+        // Ensure parent container maintains square proportions
+        const gridContainer = gridElement.parentElement;
+        gridContainer.style.aspectRatio = '1 / 1';
+        
+        // Prevent dragging issues
+        gridElement.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+        
+        gridElement.addEventListener('mouseleave', () => {
+            isMouseDown = false;
+        });
+        
+        updateGridDisplay(gridElement, grid);
+    }
+    
     // Function to handle cell interactions based on current tool
     function handleCellInteraction(cell, grid) {
         const row = parseInt(cell.dataset.row);
@@ -175,15 +266,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 syncGrids(dijkstraGrid, astarGrid);
                 break;
             case 'wall':
+                // Toggle the wall state
+                const isBecomingWall = !grid.getNode(row, col).isWall;
                 grid.toggleWall(row, col);
+                
+                // If becoming a wall, assign a random obstacle image and store it
+                if (isBecomingWall) {
+                    const nodeKey = `${row}-${col}`;
+                    const randomObstacle = obstacles[Math.floor(Math.random() * obstacles.length)];
+                    wallImageMap.set(nodeKey, randomObstacle);
+                }
+                
                 syncGrids(dijkstraGrid, astarGrid);
                 break;
             case 'weight':
-                // Show weight modal
-                showWeightModal(() => {
-                    grid.setWeight(row, col, weightValue);
-                    syncGrids(dijkstraGrid, astarGrid);
-                });
+                // Directly set weight without showing modal again
+                grid.setWeight(row, col, weightValue);
+                syncGrids(dijkstraGrid, astarGrid);
                 break;
             case 'erase':
                 // Reset the cell
@@ -191,6 +290,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!node.isStart && !node.isEnd) {
                     node.isWall = false;
                     node.weight = 1;
+                    
+                    // Remove the wall image mapping
+                    const nodeKey = `${row}-${col}`;
+                    wallImageMap.delete(nodeKey);
                 }
                 syncGrids(dijkstraGrid, astarGrid);
                 break;
@@ -200,18 +303,20 @@ document.addEventListener('DOMContentLoaded', () => {
         updateGridDisplay(astarGridElement, astarGrid);
     }
     
-    // Function to sync both grids (keep them identical)
+    // Function to sync both grids (keep them identical)    
     function syncGrids(sourceGrid, targetGrid) {
         for (let row = 0; row < gridSize; row++) {
             for (let col = 0; col < gridSize; col++) {
                 const sourceNode = sourceGrid.getNode(row, col);
                 const targetNode = targetGrid.getNode(row, col);
                 
+                // Copy all node properties
                 targetNode.isStart = sourceNode.isStart;
                 targetNode.isEnd = sourceNode.isEnd;
                 targetNode.isWall = sourceNode.isWall;
                 targetNode.weight = sourceNode.weight;
                 
+                // Update grid's start and end node references
                 if (sourceNode.isStart) {
                     targetGrid.startNode = targetNode;
                 }
@@ -222,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Function to update the grid display
+    // Function to update the grid display    
     function updateGridDisplay(gridElement, grid) {
         const cells = gridElement.querySelectorAll('.cell');
         
@@ -230,17 +335,50 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = parseInt(cell.dataset.row);
             const col = parseInt(cell.dataset.col);
             const node = grid.getNode(row, col);
+            const nodeKey = `${row}-${col}`;
             
-            // Reset all classes
+            // Reset all classes and additional styles
             cell.className = 'cell';
+            
+            // Reset the background image to just the tile
+            if (cell.style.backgroundImage && cell.style.backgroundImage.includes('Tile')) {
+                // Extract just the tile portion of the background
+                const tileMatch = cell.style.backgroundImage.match(/url\(['"]([^'"]*Tile[^'"]*)['"]\)/);
+                if (tileMatch && tileMatch[1]) {
+                    // Set only the tile as background, removing any sprites
+                    cell.style.backgroundImage = `url('${tileMatch[1]}')`;
+                } else {
+                    // Fallback to a random tile if extraction fails
+                    const randomTile = tiles[Math.floor(Math.random() * tiles.length)];
+                    cell.style.backgroundImage = `url('${randomTile}')`;
+                }
+            } else {
+                // If there's no tile background, set a random one
+                const randomTile = tiles[Math.floor(Math.random() * tiles.length)];
+                cell.style.backgroundImage = `url('${randomTile}')`;
+            }
             
             // Add appropriate classes based on node state
             if (node.isStart) {
                 cell.classList.add('start');
+                // Add the sprite overlay for start node
+                cell.style.backgroundImage = `url('${spriteImg}'), ${cell.style.backgroundImage}`;
             } else if (node.isEnd) {
                 cell.classList.add('end');
+                // Add the sprite overlay for end node
+                cell.style.backgroundImage = `url('${spriteImg1}'), ${cell.style.backgroundImage}`;
             } else if (node.isWall) {
                 cell.classList.add('wall');
+                // Use the stored obstacle image or assign a new one if not present
+                const obstacleImage = wallImageMap.get(nodeKey) || 
+                                     obstacles[Math.floor(Math.random() * obstacles.length)];
+                
+                // Store the image if it's not already stored
+                if (!wallImageMap.has(nodeKey)) {
+                    wallImageMap.set(nodeKey, obstacleImage);
+                }
+                
+                cell.style.backgroundImage = `url('${obstacleImage}'), ${cell.style.backgroundImage}`;
             } else if (node.weight > 1) {
                 cell.classList.add('weight');
                 cell.setAttribute('data-weight', node.weight);
@@ -302,16 +440,77 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Function to clear the entire grid
     function clearGrid() {
+        // Reset both grids
         dijkstraGrid.clearBoard();
         astarGrid.clearBoard();
+        
+        // Clear the wall image map
+        wallImageMap.clear();
         
         // Reset start and end nodes
         setStartAndEndNodes(dijkstraGrid, astarGrid);
         
+        // Clear visualization
         clearVisualization();
         
+        // Make sure all cells are completely reset visually
+        const cells = document.querySelectorAll('.cell');
+        cells.forEach(cell => {
+            // Remove all classes except 'cell'
+            cell.className = 'cell';
+            
+            // Get cell coordinates
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            
+            // Reset the background to just the tile
+            const randomTile = tiles[Math.floor(Math.random() * tiles.length)];
+            cell.style.backgroundImage = `url('${randomTile}')`;
+        });
+        
+        // Fully update grid display for both grids
         updateGridDisplay(dijkstraGridElement, dijkstraGrid);
         updateGridDisplay(astarGridElement, astarGrid);
+    }
+    
+    // Function to show notification
+    function showNotification(message, isSuccess = true) {
+        // Clear previous content
+        notificationMessage.innerHTML = '';
+        
+        // Create status text element (Path Found/Path Not Found) in green
+        const statusText = document.createElement('span');
+        statusText.textContent = isSuccess ? 'Path Found' : 'Path Not Found';
+        statusText.style.color = isSuccess ? '#3fd94c' : '#ff4d4d';
+        statusText.style.fontWeight = 'bold';
+
+        //Create line break
+        const lineBreak = document.createElement('br');
+        
+        // Create message element in white
+        const messageText = document.createElement('span');
+        messageText.textContent = ' ' + message;
+        messageText.style.color = 'white';
+        
+        // Append both elements to the notification message
+        notificationMessage.appendChild(statusText);
+        notificationMessage.appendChild(lineBreak);
+        notificationMessage.appendChild(messageText);
+        
+        // Set notification class
+        notification.className = 'notification ' + (isSuccess ? 'success' : 'error');
+        notification.style.display = 'block';
+        
+        // Add click event for the close button
+        const closeBtn = notification.querySelector('.notification-close');
+        closeBtn.addEventListener('click', () => {
+            notification.style.display = 'none';
+        });
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 6500);
     }
     
     // Function to visualize the algorithms
@@ -321,7 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-                clearVisualization();
+        clearVisualization();
         
         // Prepare nodes for pathfinding
         dijkstraGrid.resetNodes();
@@ -339,6 +538,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         astarVisitedElement.textContent = astarResult.visitedNodes.length;
         astarLengthElement.textContent = astarResult.path.length > 0 ? astarResult.path.length - 1 : 0;
+        
+        // Show notification based on path finding results
+        if (dijkstraResult.path.length === 0 && astarResult.path.length === 0) {
+            showNotification("FIND ME THE STUPID BOOK!", false);
+        } else {
+            showNotification("THANKS, NOW I CAN WISH TO CEASE ALL LIFE! SCREW THIS PITIFUL BODY!", true);
+        }
         
         if (isAutoMode) {
             // Animate the algorithms automatically
@@ -548,6 +754,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Set default start and end nodes
         setStartAndEndNodes(dijkstraGrid, astarGrid);
+        
+        // Ensure grid containers maintain square aspect ratio
+        const gridContainers = document.querySelectorAll('.grid-container');
+        gridContainers.forEach(container => {
+            container.style.aspectRatio = '1 / 1';
+        });
     }
     
     // Function to handle custom grid size
@@ -761,13 +973,29 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('add-weights').addEventListener('click', () => {
             document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
             document.getElementById('add-weights').classList.add('active');
-            currentTool = 'weight';
+            
+            // Show weight modal immediately when weight tool is selected
+            showWeightModal(() => {
+                currentTool = 'weight';
+            });
         });
         
         document.getElementById('erase').addEventListener('click', () => {
             document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
             document.getElementById('erase').classList.add('active');
             currentTool = 'erase';
+        });
+        
+        // Add settings button event listener
+        document.getElementById('settings-button').addEventListener('click', () => {
+            configPanel.classList.add('expanded');
+            settingsButton.classList.add('active');
+        });
+        
+        // Add close panel button event listener
+        document.getElementById('close-panel').addEventListener('click', () => {
+            configPanel.classList.remove('expanded');
+            settingsButton.classList.remove('active');
         });
         
         // Action buttons
@@ -787,15 +1015,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         document.getElementById('help').addEventListener('click', () => {
-            helpModal.style.display = 'block';
+            // Now shows the intro modal instead of help modal
+            introModal.style.display = 'block';
+        });
+        
+        // Intro modal button
+        document.getElementById('proceed-intro').addEventListener('click', () => {
+            introModal.style.display = 'none';
+            // Mark as shown in localStorage
+            localStorage.setItem('lich-dungeon-intro-shown', 'true');
         });
         
         // Randomizer buttons
         document.getElementById('random-maze').addEventListener('click', () => {
             clearVisualization();
-            // Clear existing walls first before creating a new maze
+            
+            // Clear existing walls and wall images first
             clearWalls(dijkstraGrid);
+            
+            // Generate a new maze
             generateRandomMaze(dijkstraGrid);
+            
+            // Assign random obstacle images to the new walls
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const node = dijkstraGrid.getNode(row, col);
+                    if (node.isWall) {
+                        const nodeKey = `${row}-${col}`;
+                        const randomObstacle = obstacles[Math.floor(Math.random() * obstacles.length)];
+                        wallImageMap.set(nodeKey, randomObstacle);
+                    }
+                }
+            }
+            
             syncGrids(dijkstraGrid, astarGrid);
             updateGridDisplay(dijkstraGridElement, dijkstraGrid);
             updateGridDisplay(astarGridElement, astarGrid);
@@ -813,7 +1065,22 @@ document.addEventListener('DOMContentLoaded', () => {
         
         document.getElementById('random-points').addEventListener('click', () => {
             clearVisualization();
+            
+            // Generate random start and end points
             generateRandomStartEnd(dijkstraGrid);
+            
+            // Clear wallImageMap entries for start and end positions if they were walls
+            if (dijkstraGrid.startNode) {
+                const startKey = `${dijkstraGrid.startNode.row}-${dijkstraGrid.startNode.col}`;
+                wallImageMap.delete(startKey);
+            }
+            
+            if (dijkstraGrid.endNode) {
+                const endKey = `${dijkstraGrid.endNode.row}-${dijkstraGrid.endNode.col}`;
+                wallImageMap.delete(endKey);
+            }
+            
+            // Sync the grids and update display
             syncGrids(dijkstraGrid, astarGrid);
             updateGridDisplay(dijkstraGridElement, dijkstraGrid);
             updateGridDisplay(astarGridElement, astarGrid);
@@ -848,6 +1115,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const node = grid.getNode(row, col);
                 if (!node.isStart && !node.isEnd) {
                     node.isWall = false;
+                    
+                    // Also remove from wall image map
+                    const nodeKey = `${row}-${col}`;
+                    wallImageMap.delete(nodeKey);
                 }
             }
         }
@@ -917,4 +1188,42 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    // Override the Grid's setStartNode method
+    window.Grid.prototype.setStartNode = function(row, col) {
+        // Clear the old start node
+        if (this.startNode) {
+            this.startNode.isStart = false;
+        }
+        
+        // Set the new start node
+        const node = this.getNode(row, col);
+        
+        // Remove wall or weight if present
+        node.isWall = false;
+        node.weight = 1;
+        
+        // Set as start node
+        node.isStart = true;
+        this.startNode = node;
+    };
+    
+    // Override the Grid's setEndNode method
+    window.Grid.prototype.setEndNode = function(row, col) {
+        // Clear the old end node
+        if (this.endNode) {
+            this.endNode.isEnd = false;
+        }
+        
+        // Set the new end node
+        const node = this.getNode(row, col);
+        
+        // Remove wall or weight if present
+        node.isWall = false;
+        node.weight = 1;
+        
+        // Set as end node
+        node.isEnd = true;
+        this.endNode = node;
+    };
 }); 
