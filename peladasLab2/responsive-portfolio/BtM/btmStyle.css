@@ -39,7 +39,7 @@ header::after {
 }
 
 header .cover-image {
-    max-width: 85%;
+    max-width: 100%;
     height: 30%;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
