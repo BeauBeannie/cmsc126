@@ -150,11 +150,12 @@ header::after {
 
 .hero-section {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     gap: 20px;
-    padding: 200px 50px 200px 50px; /* top right bottom left */
+    padding: 200px 50px 50px 50px; /* top right bottom left */
     flex-wrap: wrap;
     background: #00000094; /* Subtle background */
     position: relative; /* Make sure the fade can be applied */
@@ -185,7 +186,7 @@ header::after {
 }
 
 .hero-text {
-    max-width: 500px;
+    max-width: 800px;
     background: rgba(0, 0, 0, 0.515); /* Transparent black for readability */
     padding: 20px;
     border-radius: 12px;
@@ -282,7 +283,7 @@ header::after {
     align-items: center; /* Center-aligns the content */
     text-align: center;
     gap: 10px;
-    padding: 10px 50px 150px 50px; /* top right bottom left */
+    padding: 10px 50px 100px 50px; /* top right bottom left */
     flex-wrap: wrap;
     background: #00000094;
 }
