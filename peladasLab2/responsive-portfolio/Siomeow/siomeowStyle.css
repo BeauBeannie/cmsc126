@@ -68,7 +68,7 @@ header p {
     font-weight: 600;
     text-align: center;
     margin-bottom: 2rem;
-    color: #d09747;
+    color: #43968c;
     position: relative;
 }
 
@@ -76,7 +76,7 @@ header p {
     content: '';
     width: 60px;
     height: 4px;
-    background: #d09747;
+    background: #43968c;
     display: block;
     margin: 10px auto 0;
     border-radius: 2px;
@@ -108,7 +108,7 @@ header p {
 
 .group-photo {
     width: 300px;
-    border: 4px solid #d09747; /* Deep purple border */
+    border: 4px solid #43968c; /* Deep purple border */
     border-radius: 12px;
     object-fit: cover;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
@@ -121,7 +121,7 @@ header p {
 }
 
 .highlighted-name {
-    color: #d09747; /* Elegant violet — you can change to your preferred color */
+    color: #4ed1c2; /* Elegant violet — you can change to your preferred color */
     font-weight: 700;
 }
 
@@ -138,7 +138,7 @@ header p {
     font-size: 2.4rem;
     text-align: center;
     margin-bottom: 30px;
-    color: #d09747; /* Accent color for the section title */
+    color: #43968c; /* Accent color for the section title */
 }
 
 /* Flex layout for the team members */
@@ -176,7 +176,7 @@ header p {
     width: 100%;
     height: 250px;
     object-fit: cover;
-    border-bottom: 3px solid #d09747; /* Border for separation */
+    border-bottom: 3px solid #43968c; /* Border for separation */
 }
 
 /* Team information (name and role) */
@@ -187,7 +187,7 @@ header p {
 .name {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #d09747; /* Accent color for names */
+    color: #43968c; /* Accent color for names */
     margin-bottom: 5px;
 }
 
@@ -208,7 +208,7 @@ header p {
 }
 
 .team-member:hover .role {
-    color: #d09747; /* Change role color on hover */
+    color: #43968c; /* Change role color on hover */
 }
 
 .game-description {
@@ -226,8 +226,8 @@ header p {
     text-align: center;
     font-size: 2.4rem;
     margin-bottom: 1.5rem;
-    color: #d09747;
-    text-shadow: 0 0 8px rgba(255, 255, 50, 0.3);
+    color: #43968c;
+    text-shadow: 0 0 8px rgba(50, 228, 255, 0.216);
     font-family: 'Poppins', sans-serif;
     letter-spacing: 1px;
 }
@@ -275,7 +275,7 @@ header p {
     width: 100%;
     max-width: 1000px; /* Adjusted to a larger size */
     border-radius: 1.5rem;
-    box-shadow: 0 0 25px rgba(249, 248, 113, 0.15);
+    box-shadow: 0 0 25px rgba(50, 228, 255, 0.15);
     transition: transform 0.3s ease;
 }
 
@@ -306,7 +306,7 @@ header p {
 
 .screenshot-card:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(249, 248, 113, 0.3);
+    box-shadow: 0 0 25px rgba(50, 228, 255, 0.15);
 }
 
 
@@ -327,8 +327,8 @@ header p {
 #my-contribution h2 {
     text-align: center;
     font-size: 2.8rem;
-    color: #f3c96b;
-    text-shadow: 0 0 12px rgba(255, 230, 120, 0.4);
+    color: #43968c;
+    text-shadow: 0 0 12px rgba(50, 228, 255, 0.318);
     margin-bottom: 2.5rem;
     font-weight: 700;
     letter-spacing: 1px;
@@ -351,13 +351,13 @@ header p {
 
 .contribution-item:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(255, 230, 120, 0.3);
-    border: 1px solid #f3c96b; /* Highlight border */
+    box-shadow: 0 12px 24px rgba(50, 228, 255, 0.3);
+    border: 1px solid #43968c; /* Highlight border */
 }
 
 .contribution-item h3 {
     font-size: 1.6rem;
-    color: #f3c96b;
+    color: #43968c;
     margin-bottom: 1rem;
     font-weight: 600;
 }
