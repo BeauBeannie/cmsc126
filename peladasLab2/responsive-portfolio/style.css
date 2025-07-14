@@ -1,12 +1,12 @@
 @font-face {
     font-family: 'Glacial Indifference';
-    src: url('/responsive-portfolio/assets/glacial-indifference/GlacialIndifference-Regular.otf') format('opentype');
+    src: url('assets/glacial-indifference/GlacialIndifference-Regular.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 body {
-    background-image: url('/responsive-portfolio/assets/GameStyle/Background.png'); /* Path to your background image */
+    background-image: url('assets/GameStyle/Background.png'); /* Path to your background image */
     background-size: cover; /* Makes sure the image covers the whole page */
     background-position: center center; /* Centers the background image */
     background-attachment: fixed; /* Keeps the background fixed when scrolling */
