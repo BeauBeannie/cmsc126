@@ -385,16 +385,14 @@ header::after {
     margin-bottom: 0px;  /* Space between icon and text */
 }
 
-.contact-item a {
+.contact-item {
     text-decoration: none;
-    color: #F1FAEE; /* Color of links */
-    font-size: 1rem;  /* Smaller text size for links */
+    color: #F1FAEE;
 }
 
-.contact-item a:hover {
-    color: #0481ab; /* Color change on hover */
+.contact-item:hover {
+    color: #0481ab;
 }
-
 
 /* === Parallax Container === */
 .parallax-container {
