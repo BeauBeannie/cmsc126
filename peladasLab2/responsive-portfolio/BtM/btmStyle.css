@@ -7,8 +7,14 @@
 }
 
 body {
-    background-color: #000000; /* Dark background for dark mode */
-    color: #e0e0e0; /* Light text color for better readability in dark mode */
+    background-image: url('../BtM/btmAssets/btmoverlay.png');
+    background-color: #000000; /* Solid black base */
+    background-repeat: repeat; /* Repeats the pattern */
+    background-size: auto;     /* Shows the actual size of the pattern */
+    background-attachment: fixed; /* Makes the pattern stay fixed as you scroll */
+    background-position: top left; /* Optional: align it properly */
+    
+    color: #e0e0e0;
     line-height: 1.6;
 }
 
